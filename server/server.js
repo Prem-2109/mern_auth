@@ -16,7 +16,7 @@ app.use(express.json()); // Parse JSON request bodies
 app.use(cookieParser()); // Parse cookies from request headers
 app.use(cors({
     credentials: true,
-    origin: process.env.CORS_ORIGIN || 'https://mern-auth-backend-j9s3.onrender.com' // Adjust with your frontend URL
+    origin: process.env.CORS_ORIGIN || 'https://mern-auth-frontend-qq28.onrender.com' // Adjust with your frontend URL
 }));
 // Routes
 app.get('/', (req, res) => res.send("API Working"));
