@@ -4,7 +4,6 @@ import userModel from '../models/usermodels.js';
 import transporter from '../config/Nodemailer.js';
 import { EMAIL_VERIFY_TEMPLATE, PASSWORD_RESET_TEMPLATE } from '../config/emailTemplate.js';
 
-
 export const register = async (req, res) => {
 
     const { name, email, password } = req.body;
