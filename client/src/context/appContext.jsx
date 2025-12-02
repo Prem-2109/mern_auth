@@ -6,42 +6,49 @@ export const AppContext = createContext();
 
 export const AppContextProvider = (props) => {
     const backendUrl = import.meta.env.VITE_BACKEND_URL;
+
+    // ⭐ Required for cookies on Render
+    axios.defaults.withCredentials = true;
+
     const [isLoggedIn, setLoggedIn] = useState(false);
     const [userData, setUserData] = useState(false);
 
-    const getAuthState = async ()=>{
+    const getAuthState = async () => {
         try {
-            const {data} = await axios.get(backendUrl + '/api/auth/is-auth')
-            if(data.success){
+            const { data } = await axios.get(backendUrl + "/api/auth/is-auth");
+
+            if (data.success) {
                 setLoggedIn(true);
                 getUserData();
             }
         } catch (error) {
-            toast.error(data.message)
+            toast.error(error.response?.data?.message || "Auth failed");
         }
-    }
+    };
 
-
-
-    const getUserData = async ()=>{
+    const getUserData = async () => {
         try {
-            const {data} = await axios.get(backendUrl + '/api/user/data')
-            data.success ? setUserData(data.userData) : toast.error(data.message)
-        } catch (error) {
-            toast.error(data.message)
-        }
-    }
+            const { data } = await axios.get(backendUrl + "/api/user/data");
 
-    useEffect(()=>{
+            if (data.success) {
+                setUserData(data.userData);
+            } else {
+                toast.error(data.message);
+            }
+        } catch (error) {
+            toast.error(error.response?.data?.message || "User data error");
+        }
+    };
+
+    useEffect(() => {
         getAuthState();
-    },[])
+    }, []);
 
     const value = {
-        backendUrl, // Include any other shared state or functions here
+        backendUrl,
         isLoggedIn, setLoggedIn,
         userData, setUserData,
         getUserData
-        
     };
 
     return (
