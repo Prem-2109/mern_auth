@@ -11,34 +11,36 @@ const port = process.env.PORT || 4000;
 
 connectDB();
 
-app.use(express.json());
-app.use(cookieParser());
-
-// ⭐ FIXED CORS (Render)
+// ⭐ CORS MUST BE FIRST ⭐
 app.use(
   cors({
-    origin: process.env.CORS_ORIGIN || "https://mern-auth-frontend-qq28.onrender.com",
+    origin: "https://mern-auth-frontend-qq28.onrender.com",
     credentials: true,
   })
 );
 
-app.get('/', (req, res) => res.send("API Working"));
+app.use(express.json());
+app.use(cookieParser());
 
-app.use('/api/auth', authroutes);
-app.use('/api/user', userRouter);
+// Health check
+app.get("/", (req, res) => res.send("API Working"));
 
-// Error handling
+app.use("/api/auth", authroutes);
+app.use("/api/user", userRouter);
+
+// 404 handler
 app.use((req, res, next) => {
-    const error = new Error('Not Found');
-    error.status = 404;
-    next(error);
+  res.status(404).json({ success: false, message: "Not Found" });
 });
 
+// Error handler
 app.use((error, req, res, next) => {
-    res.status(error.status || 500).json({
-        success: false,
-        message: error.message || 'Internal Server Error'
-    });
+  res.status(error.status || 500).json({
+    success: false,
+    message: error.message || "Internal Server Error",
+  });
 });
 
-app.listen(port, () => console.log(`Server started on PORT: ${port}`));
+app.listen(port, () => console.log(`Server running on PORT: ${port}`));
+
+export default app;
